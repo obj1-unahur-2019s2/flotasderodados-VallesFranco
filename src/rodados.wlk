@@ -1,3 +1,6 @@
+import dependencias.*
+import pedidos.*
+
 class Corsa {
 	var property color = ""
 	

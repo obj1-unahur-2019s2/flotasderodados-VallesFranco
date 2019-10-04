@@ -1,0 +1,73 @@
+import rodados.*
+import dependencias.*
+import pedidos.*
+
+describe "tests de las dependencias y los pedidos." {
+	
+	var deportes = new Dependencia (empleados = 45)
+	var culturas = new Dependencia (empleados = 31)
+	
+	var cachito = new Corsa (color="rojo")
+	var cazul = new Corsa (color="azul")
+	var cverde = new Corsa (color="verde")
+	var kta1 = new Kwid (tanqueDeGasExtra=true)
+	var kta2 = new Kwid (tanqueDeGasExtra=true)
+	var kta3 = new Kwid (tanqueDeGasExtra=true)
+	var ksta1 = new Kwid (tanqueDeGasExtra=false)
+	var ae1 = new Especial (
+		capacidad = 5,
+		velocidadMaxima = 160,
+		peso = 1200,
+		color = "beige"
+	)
+	
+	fixture {
+		trafic.interior(interiorPopular)
+		trafic.motor(motorBataton)
+		deportes.agregarAFlota(cachito)
+		deportes.agregarAFlota(cazul)
+		deportes.agregarAFlota(cverde)
+		deportes.agregarAFlota(kta1)
+		deportes.agregarAFlota(ae1)
+		culturas.agregarAFlota(cachito)
+		culturas.agregarAFlota(kta2)
+		culturas.agregarAFlota(kta3)
+		culturas.agregarAFlota(ksta1)
+		culturas.agregarAFlota(trafic)
+	}
+	
+	test "peso total de las flotas" {	
+		assert.equals(6450, deportes.pesoTotalFlota())
+		assert.equals(10700, culturas.pesoTotalFlota())	
+	}
+	
+	test "estan bien equipadas ambas dependencias" {
+		assert.that(deportes.estaBienEquipada())
+		assert.notThat(culturas.estaBienEquipada())
+	}
+	
+	test "capacidades totales segun color" {
+		assert.equals(7, deportes.capacidadTotalEnColor("azul"))
+		assert.equals(10, culturas.capacidadTotalEnColor("azul"))
+	}
+	
+	test "coche más rápido de cada dependencia" {
+		assert.equals("beige", deportes.colorDelRodadoMasRapido())
+		assert.equals("rojo", culturas.colorDelRodadoMasRapido())
+	}
+	
+	test "capacidad faltante en cada dependencia" {
+		assert.equals(25, deportes.capacidadFaltante())
+		assert.equals(5, culturas.capacidadFaltante())
+	}
+	
+	test "capacidad total de las flotas" {
+		assert.equals(20, deportes.capacidadTotal())
+		assert.equals(26, culturas.capacidadTotal())
+	}
+	
+	test "las dependencias son grandes" {
+		assert.that(deportes.esGrande())
+		assert.notThat(culturas.esGrande())
+	}
+}

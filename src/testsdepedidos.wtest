@@ -1,0 +1,86 @@
+import rodados.*
+import dependencias.*
+import pedidos.*
+
+describe "tests de pedidos" {
+	
+	var deportes = new Dependencia (empleados = 45)
+	var pedido = new Pedido (
+		distancia = 960,
+		tiempo = 8,
+		pasajeros = 4,
+		coloresIncompatibles = ["azul","negro"]
+	)
+	var pedido2 = new Pedido (
+		distancia = 480,
+		tiempo = 6,
+		pasajeros = 5,
+		coloresIncompatibles = ["verde","rojo","negro"]
+	)
+	var pedido3 = new Pedido (
+		distancia = 1080,
+		tiempo = 4,
+		pasajeros = 4,
+		coloresIncompatibles = ["beige","blanco"]
+	)
+	var cachito = new Corsa (color="rojo")
+	var cazul = new Corsa (color="azul")
+	var cverde = new Corsa (color="verde")
+	var kta1 = new Kwid (tanqueDeGasExtra=true)
+	var ae1 = new Especial (
+		capacidad = 5,
+		velocidadMaxima = 160,
+		peso = 1200,
+		color = "beige"
+	)
+	
+	fixture {
+		deportes.agregarAPedidos(pedido)
+		deportes.agregarAPedidos(pedido2)
+		deportes.agregarAPedidos(pedido3)
+		deportes.agregarAFlota(cachito)
+		deportes.agregarAFlota(cazul)
+		deportes.agregarAFlota(cverde)
+		deportes.agregarAFlota(kta1)
+		deportes.agregarAFlota(ae1)
+	}
+	
+	test "cachito puede satisfacer el pedido" {
+		assert.that(pedido.puedeSatisfacerUnPedido(cachito))
+	}
+	
+	test "velocidad requerida" {
+		assert.equals(120, pedido.velocidadRequerida())
+	}
+	
+	test "disminuir tiempo máximo" {
+		pedido.acelerar()
+		assert.equals(7, pedido.tiempo())
+	}
+	
+	test "aumentar tiempo máximo, 2 veces" {
+		2.times{i => pedido.relajar()}
+		assert.equals(10, pedido.tiempo())
+	}
+	
+	test "total de pasajeros" {
+		assert.equals(13, deportes.totalPasajeros())
+		assert.notEquals(20, deportes.totalPasajeros())
+	}
+	
+	test "puede satisfacer el pedido" {
+		assert.that(deportes.puedeSerSatisfecho(pedido2))
+		assert.notThat(deportes.puedeSerSatisfecho(pedido3))
+		assert.equals([pedido3], deportes.noPuedenSerSatisfechos())
+		assert.notEquals([pedido,pedido2], deportes.noPuedenSerSatisfechos())
+	}
+	
+	test "relajar pedidos" {
+		deportes.relajarTodosLosPedidos()
+		assert.equals(21, deportes.totalTiempoMaximo())
+	}
+	
+	test "colores incompatibles" {
+		assert.that(deportes.colorIncompatibleEnPedidos("rojo"))
+	}
+}

@@ -8,12 +8,17 @@ var property pasajeros = 0
 const property coloresIncompatibles = []
 	
 	method velocidadRequerida() = distancia / tiempo
+	
 	method puedeSatisfacerUnPedido(auto) {
-		return auto.velocidadMaxima() - self.velocidadRequerida() >= 10
+		return auto.velocidadMaxima() >= self.velocidadRequerida() + 10
 		and auto.capacidad() >= pasajeros
 		and not coloresIncompatibles.any{a => a == auto.color()}
 	}
+
+	method satisfaceElColor(color) { return not coloresIncompatibles.contains{a => a.color() == color} }
+	
 	method acelerar() { tiempo = 1.max(tiempo-1) }
+	
 	method relajar() { tiempo += 1 }
 
 }
